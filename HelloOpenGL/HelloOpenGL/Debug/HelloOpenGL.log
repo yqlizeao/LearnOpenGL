@@ -1,0 +1,6 @@
+﻿  Shader.cpp
+  demo.cpp
+e:\learnopengl\helloopengl\helloopengl\shader.h(52): warning C4101: “infoLog”: 未引用的局部变量
+e:\learnopengl\helloopengl\helloopengl\shader.h(51): warning C4101: “success”: 未引用的局部变量
+  正在生成代码...
+  HelloOpenGL.vcxproj -> E:\LearnOpenGL\HelloOpenGL\Debug\HelloOpenGL.exe
