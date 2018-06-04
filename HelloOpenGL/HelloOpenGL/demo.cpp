@@ -3,8 +3,11 @@
 
 #include "Shader.h"
 #include "stb_image.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
-#include <filesystem>
+
 //对窗口注册一个回调函数(Callback Function)，它会在每次窗口大小被调整的时候被调用
 //声明方法
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -231,9 +234,18 @@ int main()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
+		glm::mat4 transform;//定义一个mat4类型的trans，默认是一个4×4单位矩阵
+		//创建变换矩阵  先缩放，在位移
+		transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+		//使用GLFW的时间函数来获取不同时间的角度
+		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
 		//glUseProgram(shaderProgram);//调用glUseProgram函数，以激活这个程序对象，每个着色器调用和渲染调用都会使用这个程序对象（也就是之前写的着色器)了
 		ourShader.use();
-
+		unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+		//第二个参数告诉OpenGL我们将要发送多少个矩阵,第三个参数询问我们我们是否希望对我们的矩阵进行置换,最后一个参数是真正的矩阵数据
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+		
 		/*float timeValue = glfwGetTime();
 		float greenValue = sin(timeValue) / 2.0f + 0.5f;
 		int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
@@ -243,6 +255,7 @@ int main()
 		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 		//glBindVertexArray(0); // no need to unbind it every time 
 
 		glfwSwapBuffers(window);//交换颜色缓冲
