@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Shader.h"
+#include "Camera.h"
 #include "stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -19,16 +20,17 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 // camera
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+//glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+//glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+//glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 bool firstMouse = true;//使用一个bool变量检验我们是否是第一次获取鼠标输入(防止刚进入与中心点的偏移过大)
-float yaw = -90.0f;	//由于0.0的偏航导致方向矢量指向右侧，因此偏航被初始化为-90.0度，因此我们最初向左旋转一点
-float pitch = 0.0f;
-float lastX = 800.0f / 2.0;
-float lastY = 600.0 / 2.0;   //初始值设置为屏幕的中心
-float fov = 45.0f;
+//float yaw = -90.0f;	//由于0.0的偏航导致方向矢量指向右侧，因此偏航被初始化为-90.0度，因此我们最初向左旋转一点
+//float pitch = 0.0f;
+float lastX = SCR_WIDTH / 2.0;
+float lastY = SCR_HEIGHT / 2.0;   //初始值设置为屏幕的中心
+//float fov = 45.0f;
 
 // timing
 float deltaTime = 0.0f;	// 当前帧与上一帧的时间差
@@ -333,7 +335,7 @@ int main()
 		//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 		glm::mat4 projection;
 		//glm::perspective所做的其实就是创建了一个定义了可视空间的大平截头体(第一个值视野，第二个宽高比、视口的宽除以高所得，第三和第四个参数设置了平截头体的近和远平面)
-		projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		//注意：目前我们在每一帧都设置了投影矩阵，但由于投影矩阵很少改变，所以最好只将其设置在主循环之外。
 		ourShader.setMat4("projection", projection);
 		//// 注意，我们将矩阵向我们要进行移动场景的反方向移动。
@@ -341,7 +343,7 @@ int main()
 		/*float radius = 10.0f;
 		float camX = sin(glfwGetTime()) * radius;
 		float camZ = cos(glfwGetTime()) * radius;*/
-		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);//方向是当前的位置加上我们刚刚定义的方向向量。这样能保证无论我们怎么移动，摄像机都会注视着目标方向
+		view = camera.GetViewMatrix();//方向是当前的位置加上我们刚刚定义的方向向量。这样能保证无论我们怎么移动，摄像机都会注视着目标方向
 
 		//unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
 		unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
@@ -396,14 +398,14 @@ void processInput(GLFWwindow *window)
 
 	float cameraSpeed = 2.5 * deltaTime;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		cameraPos += cameraSpeed * cameraFront;
+		camera.ProcessKeyboard(FORWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		cameraPos -= cameraSpeed * cameraFront;
+		camera.ProcessKeyboard(BACKWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		//我们对右向量进行了标准化,标准化移动就是匀速的
-		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -419,36 +421,38 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastX = xpos;
 	lastY = ypos;
 
-	float sensitivity = 0.1f; // change this value to your liking
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
+	camera.ProcessMouseMovement(xoffset, yoffset);
+	//float sensitivity = 0.1f; // change this value to your liking
+	//xoffset *= sensitivity;
+	//yoffset *= sensitivity;
 
-	//偏移量加到全局变量pitch和yaw上
-	yaw += xoffset;
-	pitch += yoffset;
+	////偏移量加到全局变量pitch和yaw上
+	//yaw += xoffset;
+	//pitch += yoffset;
 
-	// make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (pitch > 89.0f)
-		pitch = 89.0f;
-	if (pitch < -89.0f)
-		pitch = -89.0f;
+	//// make sure that when pitch is out of bounds, screen doesn't get flipped
+	//if (pitch > 89.0f)
+	//	pitch = 89.0f;
+	//if (pitch < -89.0f)
+	//	pitch = -89.0f;
 
-	glm::vec3 front;
-	//direction代表摄像机的前轴(Front)
-	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front.y = sin(glm::radians(pitch));
-	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	cameraFront = glm::normalize(front);
+	//glm::vec3 front;
+	////direction代表摄像机的前轴(Front)
+	//front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	//front.y = sin(glm::radians(pitch));
+	//front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	//cameraFront = glm::normalize(front);
 }
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	//把缩放级别(Zoom Level)限制在1.0f到45.0f
-	if (fov >= 1.0f && fov <= 45.0f)
+	/*if (fov >= 1.0f && fov <= 45.0f)
 		fov -= yoffset;
 	if (fov <= 1.0f)
 		fov = 1.0f;
 	if (fov >= 45.0f)
-		fov = 45.0f;
+		fov = 45.0f;*/
+	camera.ProcessMouseScroll(yoffset);
 }
 
 

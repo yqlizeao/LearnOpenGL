@@ -1,13 +1,17 @@
 ﻿  demo.cpp
 e:\learnopenglgithub\helloopengl\helloopengl\shader.h(52): warning C4101: “infoLog”: 未引用的局部变量
 e:\learnopenglgithub\helloopengl\helloopengl\shader.h(51): warning C4101: “success”: 未引用的局部变量
-e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(299): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(397): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(412): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(413): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(417): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(418): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(419): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(420): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(447): warning C4244: “-=”: 从“double”转换到“float”，可能丢失数据
+e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(301): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(399): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(414): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(415): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(419): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(420): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(421): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(422): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+e:\learnopenglgithub\helloopengl\helloopengl\demo.cpp(455): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+  Shader.cpp
+  stb_image.cpp
+  正在生成代码...
+  glad.c
   HelloOpenGL.vcxproj -> E:\LearnOpenGLGithub\HelloOpenGL\Debug\HelloOpenGL.exe
